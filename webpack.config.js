@@ -1,24 +1,24 @@
-
-'use strict';
-
-var webpack = require('webpack');
+const webpack = require('webpack');
 
 module.exports = {
-  entry: './browser/js/app.js',
+  entry: './browser/App.jsx',
   output: {
-    path: __dirname,
-    filename: './build/bundle.js'
+    path: __dirname + '/public',
+    filename: 'bundle.js'
   },
   context: __dirname,
   devtool: 'source-map',
+  resolve: {
+    extensions: ['.js', '.jsx']
+  },
   module: {
-    loaders: [
+    rules: [
       {
         test: /jsx?$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'babel',
-        query: {
-          presets: ['react', 'es2015']
+        loader: 'babel-loader',
+        options: {
+          presets: ['react', 'env', 'stage-2']
         }
       }
     ]

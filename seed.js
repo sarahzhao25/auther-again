@@ -1,20 +1,16 @@
-'use strict';
+const chance = require('chance')(123);
+const toonAvatar = require('cartoon-avatar');
+const Promise = require('bluebird');
 
-var chance = require('chance')(123);
-var toonAvatar = require('cartoon-avatar');
-var Promise = require('bluebird');
+const { db, User, Story } = require('./server/db/models');
 
-var db = require('./server/db');
-var User = require('./server/api/users/user.model');
-var Story = require('./server/api/stories/story.model');
+const numUsers = 100;
+const numStories = 500;
 
-var numUsers = 100;
-var numStories = 500;
-
-var emails = chance.unique(chance.email, numUsers);
+const emails = chance.unique(chance.email, numUsers);
 
 function doTimes (n, fn) {
-  var results = [];
+  const results = [];
   while (n--) {
     results.push(fn());
   }
@@ -23,7 +19,7 @@ function doTimes (n, fn) {
 
 function randPhoto (gender) {
   gender = gender.toLowerCase();
-  var id = chance.natural({
+  const id = chance.natural({
     min: 1,
     max: gender === 'female' ? 114 : 129
   });
@@ -31,7 +27,7 @@ function randPhoto (gender) {
 }
 
 function randUser () {
-  var gender = chance.gender();
+  const gender = chance.gender();
   return User.build({
     name: [chance.first({gender: gender}), chance.last()].join(' '),
     photo: randPhoto(gender),
@@ -43,7 +39,7 @@ function randUser () {
 }
 
 function randTitle () {
-  var numWords = chance.natural({
+  const numWords = chance.natural({
     min: 1,
     max: 8
   });
@@ -55,8 +51,8 @@ function randTitle () {
 }
 
 function randStory (createdUsers) {
-  var user = chance.pick(createdUsers);
-  var numPars = chance.natural({
+  const user = chance.pick(createdUsers);
+  const numPars = chance.natural({
     min: 3,
     max: 20
   });
@@ -68,64 +64,64 @@ function randStory (createdUsers) {
 }
 
 function generateUsers () {
-  var users = doTimes(numUsers, randUser);
+  const users = doTimes(numUsers, randUser);
   users.push(User.build({
     name: 'Zeke Nierenberg',
     photo: 'http://learndotresources.s3.amazonaws.com/workshop/55e5c92fe859dc0300619bc8/zeke-astronaut.png',
     phone: '(510) 295-5523',
     email: 'zeke@zeke.zeke',
     password: '123',
-    isAdmin: true
+    isAdmin: false
   }));
   users.push(User.build({
     name: 'Omri Bernstein',
     photo: 'http://learndotresources.s3.amazonaws.com/workshop/55e5c92fe859dc0300619bc8/sloth.jpg',
     phone: '(781) 854-8854',
-    email: 'omri@zeke.zeke',
-    password: '123'
+    email: 'omri@omri.omri',
+    password: '123',
+    isAdmin: true
+  }));
+  users.push(User.build({
+    name: 'Kate Humphrey',
+    photo: 'https://learndotresources.s3.amazonaws.com/workshop/59ea65d1badb1d0004bf4ca3/baby%20hippo.jpg',
+    phone: '(555) 623-7878',
+    email: 'kate@kate.kate',
+    password: '7890',
+    isAdmin: true
   }));
   return users;
 }
 
 function generateStories (createdUsers) {
-  return doTimes(numStories, function () {
-    return randStory(createdUsers);
-  });
+  return doTimes(numStories, () => randStory(createdUsers));
 }
 
 function createUsers () {
-  return Promise.map(generateUsers(), function (user) {
-    return user.save();
-  });
+  return Promise.map(generateUsers(), user => user.save());
 }
 
 function createStories (createdUsers) {
-  return Promise.map(generateStories(createdUsers), function (story) {
-    return story.save();
-  });
+  return Promise.map(generateStories(createdUsers), story => story.save());
 }
 
 function seed () {
   return createUsers()
-  .then(function (createdUsers) {
-    return createStories(createdUsers);
-  });
+  .then(createdUsers => createStories(createdUsers));
 }
 
 console.log('Syncing database');
 
 db.sync({force: true})
-.then(function () {
-  console.log('Seeding database');
-  return seed();
-})
-.then(function () {
-  console.log('Seeding successful');
-}, function (err) {
-  console.error('Error while seeding');
-  console.error(err.stack);
-})
-.finally(function () {
-  db.close();
-  return null;
-});
+  .then(() => {
+    console.log('Seeding database');
+    return seed();
+  })
+  .then(() => console.log('Seeding successful'))
+  .catch(err => {
+    console.error('Error while seeding');
+    console.error(err.stack);
+  })
+  .finally(() => {
+    db.close();
+    return null;
+  });
