@@ -51,11 +51,39 @@ router.post('/login', (req, res, next) => {
       throw err;
     } else {
       req.session.userId = user.id;
-      res.sendStatus(200);
+      res.send(user);
     }
   })
   .catch(next)
 });
+
+router.post('/signup', (req, res, next) => {
+  User.findOrCreate({
+    where: {
+      email: req.body.email
+    }
+  })
+  .spread((user, isCreated) => {
+    if (!isCreated) {
+      const err = new Error('Ya dumb fuck. This is a duplicated user!')
+      err.status = 502;
+      throw err;
+    }
+    else {
+      return user.update({password: req.body.password})
+    }
+  })
+  .then(user => {
+    req.session.userId = user.id;
+    res.json(user);
+  })
+  .catch(err => next(err));
+})
+
+router.get('/logout', (req, res, next) => {
+  req.session.destroy();
+  res.sendStatus(200);
+})
 
 router.get('/:id', (req, res, next) => {
   req.requestedUser.reload(User.options.scopes.populated())

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { NavLink, withRouter } from 'react-router-dom';
+import {LogOut} from '../redux/LogIn';
 
 /* -----------------    COMPONENT     ------------------ */
 
@@ -78,6 +79,7 @@ const mapState = null;
 
 const mapDispatch = (dispatch, ownProps) => ({
   logout: () => {
+    dispatch(LogOut());
     console.log('You signed out. Sorta.');
     ownProps.history.push('/');
   }

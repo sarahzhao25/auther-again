@@ -15,7 +15,7 @@ class UserDetail extends Component {
 
   render() {
     const { user, stories } = this.props;
-    if (!user) return <div />  // the user id is invalid or data isn't loaded yet
+    if (!user) return <div><h1>THISISNOTSAM</h1></div>  // the user id is invalid or data isn't loaded yet
     return (
       <div className="container">
         <UserItem user={user} />

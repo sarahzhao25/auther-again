@@ -6,6 +6,7 @@ const INITIALIZE = 'INITIALIZE_USERS';
 const CREATE     = 'CREATE_USER';
 export const REMOVE = 'REMOVE_USER';
 const UPDATE     = 'UPDATE_USER';
+import {CURRENT_USER} from './Login';
 
 /* ------------     ACTION CREATORS      ------------------ */
 
@@ -32,6 +33,9 @@ export default function reducer (users = [], action) {
       return users.map(user => (
         action.user.id === user.id ? action.user : user
       ));
+
+    case CURRENT_USER:
+      return (action.decision === 'login') ? users : users.concat(action.user);
 
     default:
       return users;
