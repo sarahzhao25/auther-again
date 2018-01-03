@@ -25,6 +25,38 @@ router.post('/', (req, res, next) => {
     .catch(next);
 });
 
+/*
+
+req.body:
+{
+  email: ____,
+  password: _____
+}
+
+*/
+router.post('/login', (req, res, next) => {
+  User.find({
+    where: {
+      email: req.body.email
+    }
+  })
+  .then(user => {
+    if (!user) {
+      let err = new Error('you fucked up! non-existent user');
+      err.status = 404;
+      throw err
+    } else if (user.password !== req.body.password) {
+      let err = new Error('wrong password, ya\' fuck!');
+      err.status = 422;
+      throw err;
+    } else {
+      req.session.userId = user.id;
+      res.sendStatus(200);
+    }
+  })
+  .catch(next)
+});
+
 router.get('/:id', (req, res, next) => {
   req.requestedUser.reload(User.options.scopes.populated())
     .then(requestedUser => res.json(requestedUser))
