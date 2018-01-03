@@ -13,7 +13,7 @@ class UserItem extends Component {
   }
 
   render () {
-    const { user } = this.props;
+    const { user, currentUser } = this.props;
     return (
       <div className="list-group-item min-content user-item">
         <div className="media">
@@ -32,7 +32,7 @@ class UserItem extends Component {
             </h5>
           </Link>
           <div className="media-right media-middle">
-            <button className="btn btn-default" onClick={this.removeUserCallback}>
+            <button className="btn btn-default" disabled={currentUser === {} || !currentUser.isAdmin} onClick={this.removeUserCallback}>
               <span className="glyphicon glyphicon-remove" />
             </button>
           </div>
@@ -49,7 +49,7 @@ class UserItem extends Component {
 
 /* -----------------    CONTAINER     ------------------ */
 
-const mapState = null;
+const mapState = (state) => ({ currentUser : state.currentUser });
 
 // When given just an object, react-redux wraps the functions in dispatch, so when `removeUser` is invoked off of props in the component, it will call `dispatch(removeUser(params))`
 const mapDispatch = { removeUser };

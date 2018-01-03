@@ -1071,7 +1071,7 @@ var removeUser = exports.removeUser = function removeUser(id) {
     _axios2.default.delete('/api/users/' + id).then(function () {
       return dispatch(remove(id));
     }).catch(function (err) {
-      return console.error('Removing user: ' + id + ' unsuccesful', err);
+      return console.error('Removing user: ' + id + ' unsuccessful', err);
     });
   };
 };
@@ -1081,7 +1081,7 @@ var addUser = exports.addUser = function addUser(user) {
     _axios2.default.post('/api/users', user).then(function (res) {
       return dispatch(create(res.data));
     }).catch(function (err) {
-      return console.error('Creating user: ' + user + ' unsuccesful', err);
+      return console.error('Creating user: ' + user + ' unsuccessful', err);
     });
   };
 };
@@ -1091,7 +1091,7 @@ var updateUser = exports.updateUser = function updateUser(id, user) {
     _axios2.default.put('/api/users/' + id, user).then(function (res) {
       return dispatch(update(res.data));
     }).catch(function (err) {
-      return console.error('Updating user: ' + user + ' unsuccesful', err);
+      return console.error('Updating user: ' + user + ' unsuccessful', err);
     });
   };
 };
@@ -4573,7 +4573,9 @@ var UserItem = function (_Component) {
   _createClass(UserItem, [{
     key: 'render',
     value: function render() {
-      var user = this.props.user;
+      var _props = this.props,
+          user = _props.user,
+          currentUser = _props.currentUser;
 
       return _react2.default.createElement(
         'div',
@@ -4622,7 +4624,7 @@ var UserItem = function (_Component) {
             { className: 'media-right media-middle' },
             _react2.default.createElement(
               'button',
-              { className: 'btn btn-default', onClick: this.removeUserCallback },
+              { className: 'btn btn-default', disabled: currentUser === {} || !currentUser.isAdmin, onClick: this.removeUserCallback },
               _react2.default.createElement('span', { className: 'glyphicon glyphicon-remove' })
             )
           )
@@ -4632,9 +4634,9 @@ var UserItem = function (_Component) {
   }, {
     key: 'removeUserCallback',
     value: function removeUserCallback(event) {
-      var _props = this.props,
-          removeUser = _props.removeUser,
-          user = _props.user;
+      var _props2 = this.props,
+          removeUser = _props2.removeUser,
+          user = _props2.user;
 
       removeUser(user.id);
     }
@@ -4645,7 +4647,9 @@ var UserItem = function (_Component) {
 
 /* -----------------    CONTAINER     ------------------ */
 
-var mapState = null;
+var mapState = function mapState(state) {
+  return { currentUser: state.currentUser };
+};
 
 // When given just an object, react-redux wraps the functions in dispatch, so when `removeUser` is invoked off of props in the component, it will call `dispatch(removeUser(params))`
 var mapDispatch = { removeUser: _users.removeUser };

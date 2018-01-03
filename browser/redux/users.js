@@ -52,17 +52,17 @@ export const fetchUsers = () => dispatch => {
 export const removeUser = id => dispatch => {
   axios.delete(`/api/users/${id}`)
        .then(() => dispatch(remove(id)))
-       .catch(err => console.error(`Removing user: ${id} unsuccesful`, err));
+       .catch(err => console.error(`Removing user: ${id} unsuccessful`, err));
 };
 
 export const addUser = user => dispatch => {
   axios.post('/api/users', user)
        .then(res => dispatch(create(res.data)))
-       .catch(err => console.error(`Creating user: ${user} unsuccesful`, err));
+       .catch(err => console.error(`Creating user: ${user} unsuccessful`, err));
 };
 
 export const updateUser = (id, user) => dispatch => {
   axios.put(`/api/users/${id}`, user)
        .then(res => dispatch(update(res.data)))
-       .catch(err => console.error(`Updating user: ${user} unsuccesful`, err));
+       .catch(err => console.error(`Updating user: ${user} unsuccessful`, err));
 };

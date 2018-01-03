@@ -50,7 +50,7 @@ router.post('/login', (req, res, next) => {
       err.status = 422;
       throw err;
     } else {
-      req.session.userId = user.id;
+      req.session.user = user;
       res.send(user);
     }
   })
@@ -74,7 +74,7 @@ router.post('/signup', (req, res, next) => {
     }
   })
   .then(user => {
-    req.session.userId = user.id;
+    req.session.user = user;
     res.json(user);
   })
   .catch(err => next(err));
