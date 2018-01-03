@@ -80,7 +80,7 @@ class StoryDetail extends Component {
     const {story} = this.state;
     // this is probably pretty fragile
     if (storyUpdateObj.paragraphs) {
-      storyUpdateObj.paragraphs = storyUpdateObj.paragraphs.split('<br>');
+      storyUpdateObj.paragraphs = storyUpdateObj.paragraphs.split('<br><br>');
     }
     this.setState({
       story: Object.assign(story, storyUpdateObj)
@@ -101,7 +101,7 @@ const mapState = ({ users, stories }, ownProps) => {
 const mapDispatch = (dispatch, ownProps) => ({
     debouncedUpdateStory: _.debounce((...args) => {
       dispatch(updateStory(...args));
-    }, 500) 
+    }, 500)
   });
 
 export default connect(mapState, mapDispatch)(StoryDetail);
