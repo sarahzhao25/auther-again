@@ -50,7 +50,9 @@ router.post('/login', (req, res, next) => {
       err.status = 422;
       throw err;
     } else {
-      req.session.user = user;
+      req.login(user, (err) => {
+        if (err) return next(err);
+      });
       res.send(user);
     }
   })
@@ -74,7 +76,9 @@ router.post('/signup', (req, res, next) => {
     }
   })
   .then(user => {
-    req.session.user = user;
+    req.login(user, (err) => {
+      if (err) return next(err);
+    }); //passport (session) exposes a login method that can be used to establish a login session. When the login operation completes, 'user' will be assigned to req.user.
     res.json(user);
   })
   .catch(err => next(err));

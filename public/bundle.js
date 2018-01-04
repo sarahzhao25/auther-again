@@ -28216,7 +28216,7 @@ var Login = function (_React$Component) {
               'a',
               {
                 target: '_self',
-                href: '/auth/google',
+                href: '/api/auth/google',
                 className: 'btn btn-social btn-google' },
               _react2.default.createElement('i', { className: 'fa fa-google' }),
               _react2.default.createElement(

@@ -4,6 +4,7 @@ const path = require('path');
 const volleyball = require('volleyball');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const passport = require('passport');
 
 /* "Enhancing" middleware (does not send response, server-side effects only) */
 app.use(volleyball);
@@ -28,8 +29,14 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use(passport.initialize());
+app.use(passport.session());
 
-
+//to access req.user from your passport, it NEEDS to utilize passport.session() first to be able to access it, since that is what will actually put the user on the req.user object.
+app.use((req, res, next) => {
+  console.log('req.user', req.user);
+  next();
+})
 
 /* "Responding" middleware (may send a response back to client) */
 app.use('/api', require('./api'));
